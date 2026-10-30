@@ -155,7 +155,7 @@ The sender's UI adds an optimistic `sending` state before the server acknowledge
 
 **Single service (simplest):** deploy the repo to Render, Railway, Fly.io or a VPS. Build command `npm run install:all && npm run build`, start command `npm start`, and set `MONGODB_URI` (Atlas), `JWT_SECRET`, and `CLIENT_ORIGIN` to your public URL. The Express server serves the built React app, so the client and API share one origin and no extra client config is needed. The host must support WebSockets (all of the above do).
 
-**Split hosting:** host `client/dist` on a static host (Netlify, Vercel) with `VITE_API_URL=https://your-api` set at build time, host the server separately, and set `CLIENT_ORIGIN` to the static site's URL. Static hosts need a rewrite of all routes to `index.html`.
+**Split hosting:** the included `vercel.json` configures Vercel to install the client/server dependencies and build `client/dist`, fixing Vercel builds where Vite is missing. Vercel only hosts the frontend: deploy the Express + Socket.IO server to Render, Railway, Fly.io or another WebSocket-capable host, and use MongoDB Atlas for the database. Set `VITE_API_URL` in Vercel to the deployed server's HTTPS origin and set `CLIENT_ORIGIN` on the server to the Vercel site's origin. The Vercel project uses the repository root as its Root Directory; its install command is `npm run install:all`, build command is `npm run build`, and output directory is `client/dist`. Static hosts need a rewrite of all routes to `index.html`.
 
 Note: presence tracking lives in server memory, so run a **single server instance**. To scale horizontally, add the Socket.IO Redis adapter and move the online-user map to Redis.
 
